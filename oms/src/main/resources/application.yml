@@ -1,0 +1,42 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: oms
+  datasource:
+    url: jdbc:mysql://localhost:3306/test
+    username: root
+    password: 555Vikas#
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+#  data:
+#    mongodb:
+#      uri: mongodb://localhost:27017
+#      database: microservices
+
+  #     this is used to tell config server that this service is using config server
+#  config:dev
+    ##
+    #
+#    import: optional:configserver:http://localhost:8085
+#  #    spring.config.import: configserver:http://localhost:8085
+#  #    spring.profile.active: dev
+#
+#  profiles:
+#    active:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+
+#eureka:
+#  instance:
+#    prefer-ip-address: true
+#  client:
+#    fetch-registry: true
+#    register-with-eureka: true
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka
