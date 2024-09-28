@@ -1,47 +1,45 @@
 package lcs.oms.service;
 
+import lcs.oms.enums.OrderStatus;
 import lcs.oms.model.Order;
-import lcs.oms.repository.OrderRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class OrderService {
 
-    @Autowired
-    private OrderRepository orderRepository;
+    private final Map<Long, Order> orders = new ConcurrentHashMap<>();
+    private final AtomicLong orderIdGenerator = new AtomicLong(0);
 
-    public OrderService(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
-    }
-
-    @Transactional  // Ensures the entire method runs in a transaction
     public Order createOrder(Order order) {
-        order.setStatus("CREATED");
-        return orderRepository.save(order);
+        Long id = orderIdGenerator.incrementAndGet();
+        order.setId(id);
+        order.setStatusCode(OrderStatus.CREATED.ordinal());
+        orders.put(id, order);
+        return order;
     }
-
-    @Transactional(readOnly = true)
+    // Retrieve order by ID
     public Order getOrderById(Long id) {
-        return orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+        return orders.get(id);
     }
 
-    @Transactional  // Ensures thread-safety and data integrity
-    public Order updateOrderStatus(Long id, String status) {
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
-        order.setStatus(status);
-        return orderRepository.save(order); // Automatically handles optimistic locking
+    // Update order status
+    public synchronized Order updateOrderStatus(Long id, int statusCode) {
+        Order order = orders.get(id);
+        if (order != null) {
+            order.setStatusCode(statusCode);
+        }
+        return order;
     }
 
-    @Transactional  // Synchronized operation for canceling an order
-    public void cancelOrder(Long id) {
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
-        order.setStatus("CANCELED");
-        orderRepository.save(order);
+    // Cancel order
+    public synchronized void cancelOrder(Long id) {
+        Order order = orders.get(id);
+        if (order != null) {
+            order.setStatusCode(OrderStatus.CANCELED.ordinal());
+        }
     }
 }
 

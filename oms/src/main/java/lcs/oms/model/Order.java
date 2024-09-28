@@ -12,20 +12,15 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "orders")
+//@Entity
+//@Table(name = "orders")
 public class Order {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Item> items;
 
-//    @Version  // Optimistic locking mechanism
-//    private Integer version; // This helps in optimistic locking
-
-    private String status; // CREATED, CANCELED, COMPLETED
-
-    // Constructors, getters, and setters
+    private int statusCode;
 }
