@@ -16,7 +16,7 @@ public class OrderService {
     public Order createOrder(Order order) {
         Long id = orderIdGenerator.incrementAndGet();
         order.setId(id);
-        order.setStatusCode(OrderStatus.CREATED.ordinal());
+        order.setStatusCode(OrderStatus.CREATED.getStatusCode());
         orders.put(id, order);
         return order;
     }
@@ -38,7 +38,7 @@ public class OrderService {
     public synchronized void cancelOrder(Long id) {
         Order order = orders.get(id);
         if (order != null) {
-            order.setStatusCode(OrderStatus.CANCELED.ordinal());
+            order.setStatusCode(OrderStatus.CANCELED.getStatusCode());
         }
     }
 }

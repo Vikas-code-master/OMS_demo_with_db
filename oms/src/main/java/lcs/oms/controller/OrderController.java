@@ -49,7 +49,7 @@ public class OrderController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Order> updateOrderStatus(@PathVariable Long id, @RequestBody int statusCode) {
+    public ResponseEntity<Order> updateOrderStatus(@PathVariable Long id, @RequestParam("statusCode") int statusCode) {
         return ResponseEntity.ok(orderService.updateOrderStatus(id, statusCode));
     }
 
